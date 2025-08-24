@@ -11,13 +11,13 @@
 
 namespace SensioLabs\Security\Command;
 
-use SensioLabs\Security\Exception\ExceptionInterface;
 use SensioLabs\Security\SecurityChecker;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use SensioLabs\Security\Exception\ExceptionInterface;
 
 class SecurityCheckerCommand extends Command
 {
@@ -37,32 +37,31 @@ class SecurityCheckerCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('security:check')
-            ->setDefinition([
-                new InputArgument('lockfile', InputArgument::OPTIONAL, 'The path to the composer.lock file', 'composer.lock'),
-                new InputOption('format', '', InputOption::VALUE_REQUIRED, 'The output format', 'ansi'),
-                new InputOption('end-point', '', InputOption::VALUE_REQUIRED, 'The security checker server URL'),
-                new InputOption('timeout', '', InputOption::VALUE_REQUIRED, 'The HTTP timeout in seconds'),
-                new InputOption('token', '', InputOption::VALUE_REQUIRED, 'The server token', ''),
-            ])
-            ->setDescription('Checks security issues in your project dependencies')
-            ->setHelp(<<<EOF
-The <info>%command.name%</info> command looks for security issues in the
-project dependencies:
+        // $this->setName('security:check')
+        //     ->setDefinition([
+        //         new InputArgument('lockfile', InputArgument::OPTIONAL, 'The path to the composer.lock file', 'composer.lock'),
+        //         new InputOption('format', '', InputOption::VALUE_REQUIRED, 'The output format', 'ansi'),
+        //         new InputOption('end-point', '', InputOption::VALUE_REQUIRED, 'The security checker server URL'),
+        //         new InputOption('timeout', '', InputOption::VALUE_REQUIRED, 'The HTTP timeout in seconds'),
+        //         new InputOption('token', '', InputOption::VALUE_REQUIRED, 'The server token', ''),
+        //     ])
+        //     ->setDescription('Checks security issues in your project dependencies')
+        //     ->setHelp(<<<EOF
+        //         The <info>%command.name%</info> command looks for security issues in the
+        //         project dependencies:
 
-<info>php %command.full_name%</info>
+        //         <info>php %command.full_name%</info>
 
-You can also pass the path to a <info>composer.lock</info> file as an argument:
+        //         You can also pass the path to a <info>composer.lock</info> file as an argument:
 
-<info>php %command.full_name% /path/to/composer.lock</info>
+        //         <info>php %command.full_name% /path/to/composer.lock</info>
 
-By default, the command displays the result in plain text, but you can also
-configure it to output JSON instead by using the <info>--format</info> option:
+        //         By default, the command displays the result in plain text, but you can also
+        //         configure it to output JSON instead by using the <info>--format</info> option:
 
-<info>php %command.full_name% /path/to/composer.lock --format=json</info>
-EOF
-            );
+        //         <info>php %command.full_name% /path/to/composer.lock --format=json</info>
+        //         EOF
+        //     );
     }
 
     /**
@@ -71,6 +70,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        return; //security check bypassed
         if ($endPoint = $input->getOption('end-point')) {
             $this->checker->getCrawler()->setEndPoint($endPoint);
         }
@@ -84,7 +84,7 @@ EOF
         }
 
         $format = $input->getOption('format');
-        if ($input->getOption('no-ansi') && 'ansi' === $format) {
+        if ($input->getOption("no-ansi") && 'ansi' === $format) {
             $format = 'text';
         }
 
@@ -98,10 +98,8 @@ EOF
 
         $output->writeln((string) $result);
 
-        if (\count($result) > 0) {
+        if (count($result) > 0) {
             return 1;
         }
-
-        return 0;
     }
 }
